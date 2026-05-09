@@ -197,21 +197,11 @@
 
         <section class="carb-ref-panel" aria-labelledby="carb-ref-title">
           <h2 id="carb-ref-title">碳水快速查詢</h2>
-          <p class="carb-ref-desc">點選下方資源查詢食物碳水含量，於新分頁開啟。</p>
-          <div class="carb-ref-links">
-            <a class="carb-ref-link" href="https://consumer.fda.gov.tw/Food/TFND.aspx" target="_blank" rel="noopener">
-              <span class="ref-title">衛福部食品成分資料庫</span>
-              <span class="ref-sub">官方資料，查詢最詳盡</span>
-            </a>
-            <a class="carb-ref-link" href="https://www.fatsecret.com.tw/" target="_blank" rel="noopener">
-              <span class="ref-title">FatSecret 台灣</span>
-              <span class="ref-sub">快速搜尋食物熱量與碳水</span>
-            </a>
-            <a class="carb-ref-link" href="https://caloryeasy.com/tw" target="_blank" rel="noopener">
-              <span class="ref-title">CaloryEasy 台灣</span>
-              <span class="ref-sub">中文食物熱量與營養查詢</span>
-            </a>
-          </div>
+          <p class="carb-ref-desc">輸入食物名稱，用 Google 查詢碳水含量</p>
+          <form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
+            <input class="search-input" type="text" name="q" placeholder="例：白飯 100克 碳水" autocomplete="off" />
+            <button class="search-btn" type="submit">搜尋</button>
+          </form>
         </section>
       </section>
     </main>
