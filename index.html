@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>胰島素劑量計算機</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="calculator" aria-labelledby="app-title">
+        <div class="masthead">
+          <div>
+            <p class="eyebrow">餐前速效胰島素估算</p>
+            <h1 id="app-title">胰島素劑量計算機</h1>
+          </div>
+          <div class="unit-toggle" role="group" aria-label="血糖單位">
+            <button class="unit-button active" type="button" data-unit="mgdl">mg/dL</button>
+            <button class="unit-button" type="button" data-unit="mmol">mmol/L</button>
+          </div>
+        </div>
+
+        <div class="notice" role="note">
+          這是輔助估算工具，不能取代醫師、糖尿病衛教師或個人醫囑。低血糖、酮酸中毒風險或身體不適時，請依照醫療團隊指示處理。
+        </div>
+
+        <form id="insulin-form" class="form-grid">
+          <label class="field">
+            <span>餐別 <b>自動帶入 CIR、ISF、目標血糖</b></span>
+            <select id="meal-period">
+              <option value="breakfast">早餐</option>
+              <option value="lunch">午餐</option>
+              <option value="dinner">晚餐</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>目前血糖 <b class="glucose-unit">mg/dL</b></span>
+            <input id="current-glucose" type="number" inputmode="decimal" min="0" step="1" value="180" required />
+          </label>
+
+          <div class="food-combo">
+            <label class="field">
+              <span>主餐 <b>選擇主要碳水來源</b></span>
+              <select id="carb-food-1" class="carb-food">
+                <option value="">不選擇</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>份數 <b>可輸入小數，如 1.4</b></span>
+              <input id="carb-quantity-1" class="carb-quantity" type="number" inputmode="decimal" min="0" step="0.1" value="1" />
+            </label>
+          </div>
+
+          <div class="food-combo">
+            <label class="field">
+              <span>餐食 2 <b>附餐碳水（不重複主餐）</b></span>
+              <select id="carb-food-2" class="carb-food">
+                <option value="">不選擇</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>份數 <b>可輸入小數，如 1.4</b></span>
+              <input id="carb-quantity-2" class="carb-quantity" type="number" inputmode="decimal" min="0" step="0.1" value="1" />
+            </label>
+          </div>
+
+          <div class="food-combo">
+            <label class="field">
+              <span>甜點／水果 <b>選擇水果</b></span>
+              <select id="carb-food-3" class="carb-food">
+                <option value="">不選擇</option>
+                <option value="guava">芭樂 100公克 (碳水10.6克)</option>
+                <option value="apple">蘋果 100公克 (碳水11.9克)</option>
+                <option value="cherry">櫻桃 100公克 (碳水19.12克)</option>
+                <option value="banana_peel">香蕉帶皮 100公克 (碳水10.6克)</option>
+                <option value="banana">香蕉去皮 100公克 (碳水22.1克)</option>
+                <option value="pineapple">鳳梨 100公克 (碳水13.6克)</option>
+                <option value="dragon_fruit">火龍果 100公克 (碳水12.36克)</option>
+                <option value="strawberry">草莓去蒂 100公克 (碳水9.3克)</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>份數 <b>可輸入小數，如 1.5</b></span>
+              <input id="carb-quantity-3" class="carb-quantity" type="number" inputmode="decimal" min="0" step="0.1" value="1" />
+            </label>
+          </div>
+
+          <div class="food-combo">
+            <label class="field">
+              <span>飲品 <b>牛奶 / 優酪乳 / 養樂多</b></span>
+              <select id="carb-food-4" class="carb-food">
+                <option value="">不選擇</option>
+                <option value="milk_100">牛奶 100公克 (碳水4.8克)</option>
+                <option value="milk_150">牛奶 150公克 (碳水7克)</option>
+                <option value="milk_200">牛奶 200公克 (碳水10克)</option>
+                <option value="yogurt_100">優酪乳 100公克 (碳水12克)</option>
+                <option value="yakult">養樂多 90ML／罐 (碳水14.7克)</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>份數 <b>份 / 罐</b></span>
+              <input id="carb-quantity-4" class="carb-quantity" type="number" inputmode="decimal" min="0" step="0.1" value="1" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>預計碳水量 <b>克</b></span>
+            <input id="carbs" type="number" inputmode="decimal" min="0" step="0.1" value="60" required />
+          </label>
+
+          <label class="field">
+            <span>體內尚有效胰島素 <b>單位</b></span>
+            <input id="active-insulin" type="number" inputmode="decimal" min="0" step="0.1" value="0" required />
+          </label>
+
+          <div class="preset-card">
+            <span>CIR 醣類係數</span>
+            <strong id="display-cir">10</strong>
+            <small>克 / 1 單位</small>
+          </div>
+
+          <div class="preset-card">
+            <span>ISF 敏感係數</span>
+            <strong id="display-isf">50</strong>
+            <small id="display-isf-unit">mg/dL / 1 單位</small>
+          </div>
+
+          <div class="preset-card">
+            <span>目標血糖</span>
+            <strong id="display-target">110</strong>
+            <small class="glucose-unit">mg/dL</small>
+          </div>
+        </form>
+
+        <section class="result-panel" aria-live="polite">
+          <div>
+            <p class="result-label">建議估算劑量</p>
+            <p class="result-value"><span id="recommended-dose">0</span><small>單位</small></p>
+          </div>
+          <div class="breakdown">
+            <div><span>碳水劑量</span><strong id="meal-dose">0</strong></div>
+            <div><span>血糖校正</span><strong id="correction-dose">0</strong></div>
+            <div><span>扣除有效胰島素</span><strong id="iob-dose">0</strong></div>
+            <div><span>計算值</span><strong id="raw-dose">0</strong></div>
+          </div>
+        </section>
+
+        <div id="warnings" class="warnings" aria-live="polite"></div>
+
+        <section class="meal-note-panel" aria-labelledby="meal-note-title">
+          <h2 id="meal-note-title">餐別備註</h2>
+          <div id="meal-notes" class="meal-notes" aria-live="polite"></div>
+        </section>
+
+        <section class="carb-ref-panel" aria-labelledby="carb-ref-title">
+          <h2 id="carb-ref-title">碳水快速查詢</h2>
+          <p class="carb-ref-desc">點選下方資源查詢食物碳水含量，於新分頁開啟。</p>
+          <div class="carb-ref-links">
+            <a class="carb-ref-link" href="https://consumer.fda.gov.tw/Food/TFND.aspx" target="_blank" rel="noopener">
+              <span class="ref-title">衛福部食品成分資料庫</span>
+              <span class="ref-sub">官方資料，查詢最詳盡</span>
+            </a>
+            <a class="carb-ref-link" href="https://www.fatsecret.com.tw/" target="_blank" rel="noopener">
+              <span class="ref-title">FatSecret 台灣</span>
+              <span class="ref-sub">快速搜尋食物熱量與碳水</span>
+            </a>
+            <a class="carb-ref-link" href="https://caloryeasy.com/tw" target="_blank" rel="noopener">
+              <span class="ref-title">CaloryEasy 台灣</span>
+              <span class="ref-sub">中文食物熱量與營養查詢</span>
+            </a>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
